@@ -16,7 +16,7 @@ Built with:
 <p align="center">
   <img src="screenshots/menu.png" width="300"/>
   <img src="screenshots/tutorial.png" width="300"/>
-<!-- <img src="screenshots/ingame.png" width="300"/> -->  
+  <img src="screenshots/ingame.png" width="300"/>
   <img src="screenshots/gameover1.png" width="300"/>
 </p>
 
@@ -48,7 +48,7 @@ SPACE to start
 ESC to pause
 
 Avoid red blocks and collect coins to increase your score!
-
+  ```bash
 Swipe-Chaser/
 ├── assets/              # Sprites, sounds, and other media
 ├── screenshots/         # Images for README
@@ -59,5 +59,3 @@ Swipe-Chaser/
 │   └── presenters/
 ├── requirements.txt
 └── README.md
-
-Made with ❤️ by @rohansaha27
