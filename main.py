@@ -93,8 +93,8 @@ class SwipeChaserGame:
             self.root
         )
         
-        # Show countdown before starting
-        self.show_countdown(self.begin_game)
+        # Start the game loop - countdown will be triggered by space key
+        self.presenter.update()
     
     def show_countdown(self, callback):
         """Show a countdown before starting the game"""

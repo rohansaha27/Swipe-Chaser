@@ -80,47 +80,16 @@ class GameView:
                                    "Press SPACE to start\n" +
                                    "ESC to pause")
         
-        # Draw animated title glow
-        current_time = time.time() - self.animation_timer
-        glow_size = 10 + 5 * math.sin(current_time * 5)
-        self.canvas.create_oval(
-            200 - 100 - glow_size, 280 - 30 - glow_size,
-            200 + 100 + glow_size, 280 + 30 + glow_size,
-            fill='', outline=UI_TEXT_COLOR, width=2
-        )
-        
-        # Draw some animated coins in the background
-        center_x, center_y = 200, 150
-        orbit_radius = 100
-        for i in range(5):
-            angle = current_time + i * (2 * math.pi / 5)
-            x = center_x + orbit_radius * math.cos(angle)
-            y = center_y + orbit_radius * math.sin(angle)
-            
-            # Draw coin directly with canvas
-            coin_radius = 15
-            self.canvas.create_oval(
-                x - coin_radius, y - coin_radius,
-                x + coin_radius, y + coin_radius,
-                fill=COIN_COLOR, outline='#B8860B')
-            
-            # Inner detail
-            inner_radius = coin_radius * 0.7
-            self.canvas.create_oval(
-                x - inner_radius, y - inner_radius,
-                x + inner_radius, y + inner_radius,
-                fill='#F0C000', outline='')
+        # No animations on the start screen
     
     def _draw_game_over_screen(self, score):
-        """Draw the game over screen with visual effects"""
+        """Draw the simplified game over screen"""
         # Show game over screen - ensure it's on top
         self.canvas.tag_raise(self.state_bg)
         self.canvas.tag_raise(self.state_text)
         self.canvas.tag_raise(self.instructions_text)
         
-        # Create a pulsing effect for the game over text
-        current_time = time.time() - self.animation_timer
-        pulse = 1 + 0.2 * math.sin(current_time * 5)
+        # Set up the game over text
         self.canvas.itemconfig(self.state_bg, state='normal')
         self.canvas.itemconfig(self.state_text, text=f"GAME OVER!")
         self.canvas.itemconfig(self.instructions_text, 
@@ -128,25 +97,11 @@ class GameView:
                                    "Press R to restart\n" +
                                    "Press M for main menu")
         
-        # Center the score display properly
+        # Display the score in a simple, clean format
         score_x, score_y = 200, 310
+        font_size = 28
         
-        # Draw score with shadow effect (centered)
-        font_size = 24 + int(pulse * 4)
-        
-        # Draw shadow layers
-        shadow_colors = ['#8B6914', '#A67C00', '#B8860B']  # Darker gold shades
-        for i, color in enumerate(shadow_colors):
-            offset = (3-i) * 2  # Decreasing offset for each layer
-            self.canvas.create_text(
-                score_x - offset, score_y - offset,
-                text=str(score),
-                fill=color,
-                font=("Arial", font_size, "bold"),
-                anchor="center"  # Ensure text is centered
-            )
-        
-        # Final score text on top (centered)
+        # Simple gold score display
         self.canvas.create_text(
             score_x, score_y,
             text=str(score),

@@ -30,7 +30,13 @@ class GamePresenter:
     
     def handle_space(self, event):
         if self.model.game_state == "start" and not self.paused:
-            self.model.start_game()
+            # Find the game instance to show countdown
+            if hasattr(self.root, 'master') and hasattr(self.root.master, 'show_countdown'):
+                # Show countdown animation first
+                self.root.master.show_countdown(lambda: self.model.start_game())
+            else:
+                # Fallback if we can't find the game instance
+                self.model.start_game()
         
     def handle_restart(self, event):
         if self.model.game_state == "game_over":
