@@ -1,1 +1,4 @@
-# Using Tkinter which comes with Python standard library
+# Core libraries
+Pillow==10.0.0
+
+# Tkinter comes with Python standard library
