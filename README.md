@@ -39,6 +39,7 @@ Built with:
    ```bash
    pip install -r requirements.txt
 2. Run the game:
+   ```bash
    python3 main.py
 
 Controls:
