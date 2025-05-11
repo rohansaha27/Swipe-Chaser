@@ -55,14 +55,14 @@ class SwipeChaserGame:
         }
         
         start_button = tk.Button(button_frame, text="START GAME", 
-                               bg='#333333', fg='#FFD700',
-                               activebackground='#444444', activeforeground='#FFFFFF',
+                               bg='#FFD700', fg='#000000',
+                               activebackground='#D4AF37', activeforeground='#000000',
                                command=self.start_game, **button_style)
         start_button.pack(pady=10)
         
         exit_button = tk.Button(button_frame, text="EXIT", 
-                              bg='#333333', fg='#FFD700',
-                              activebackground='#444444', activeforeground='#FFFFFF',
+                              bg='#FFD700', fg='#000000',
+                              activebackground='#D4AF37', activeforeground='#000000',
                               command=self.root.quit, **button_style)
         exit_button.pack(pady=10)
         
