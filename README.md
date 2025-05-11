@@ -29,7 +29,6 @@ Built with:
 - Obstacle spawning, collision detection, and scoring system
 - Procedural audio effects using NumPy
 - Game states: Menu, Running, Paused, Game Over
-- Polished UI with score feedback and restart options
 
 ---
 
