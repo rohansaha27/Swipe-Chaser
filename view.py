@@ -43,7 +43,7 @@ class GameView:
 
     
     def draw(self, model):
-        """Draw the game state"""
+        """Draw the game state (legacy method)"""
         # Clear canvas except for persistent UI elements
         for item in self.canvas.find_all():
             if item not in [self.score_bg, self.score_text, self.state_bg, self.state_text, self.instructions_text]:
@@ -51,12 +51,12 @@ class GameView:
         
         # Handle different game states
         if model.game_state == "start":
-            self._draw_start_screen()
+            self.draw_start_screen()
         elif model.game_state == "game_over":
-            self._draw_game_screen(model)
-            self._draw_game_over_screen(model.score)
+            self.draw_game_screen(model)
+            self.draw_game_over_screen(model.score)
         else:  # playing
-            self._draw_game_screen(model)
+            self.draw_game_screen(model)
             # Hide instructions during gameplay
             self.canvas.itemconfig(self.state_bg, state='hidden')
             self.canvas.itemconfig(self.state_text, text="")
@@ -68,6 +68,88 @@ class GameView:
         self.canvas.tag_raise(self.score_text)
         
         self.root.update()
+        
+    def draw_start_screen(self):
+        """Public method to draw the start screen"""
+        self._draw_start_screen()
+        
+    def draw_game_screen(self, model):
+        """Public method to draw the game screen"""
+        # Clear canvas except for persistent UI elements
+        for item in self.canvas.find_all():
+            if item not in [self.score_bg, self.score_text, self.state_bg, self.state_text, self.instructions_text]:
+                self.canvas.delete(item)
+                
+        # Draw lanes
+        for x in LANE_X:
+            self.canvas.create_line(x, 0, x, 600, fill=LANE_COLOR, width=2)
+            
+        # Draw player
+        player_x = LANE_X[model.player_lane]
+        player_y = PLAYER_Y
+        
+        # Draw player as a rectangle with details
+        self.canvas.create_rectangle(
+            player_x - 20, player_y - 20,
+            player_x + 20, player_y + 20,
+            fill=PLAYER_COLOR, outline='#B8860B', width=2)
+        
+        # Add player details
+        self.canvas.create_rectangle(
+            player_x - 10, player_y - 15,
+            player_x + 10, player_y - 5,
+            fill='#B8860B')  # Face
+        self.canvas.create_rectangle(
+            player_x - 5, player_y - 5,
+            player_x + 5, player_y + 10,
+            fill='#B8860B')  # Body
+        
+        # Add player shadow
+        shadow_offset = 5
+        self.canvas.create_oval(
+            player_x - 20, player_y + 20 - shadow_offset,
+            player_x + 20, player_y + 30 - shadow_offset,
+            fill='#000000', outline='', stipple='gray50')
+            
+        # Draw obstacles
+        for lane, y in model.obstacles:
+            obstacle_x = LANE_X[lane]
+            
+            # Draw obstacle as a rectangle with details
+            self.canvas.create_rectangle(
+                obstacle_x - 20, y - 20,
+                obstacle_x + 20, y + 20,
+                fill=OBSTACLE_COLOR, outline='#8B0000', width=2)
+            
+            # Add X details to obstacle
+            self.canvas.create_line(
+                obstacle_x - 15, y - 15,
+                obstacle_x + 15, y + 15,
+                fill='#FFFFFF', width=2)
+            self.canvas.create_line(
+                obstacle_x + 15, y - 15,
+                obstacle_x - 15, y + 15,
+                fill='#FFFFFF', width=2)
+            
+        # Draw coins
+        for lane, y in model.coins:
+            x = LANE_X[lane]
+            # Draw coin as a circle with details
+            self.canvas.create_oval(x-12, y-12, x+12, y+12, fill=COIN_COLOR, outline='#B8860B', width=2)
+            # Add dollar sign
+            self.canvas.create_text(x, y, text="$", fill='#B8860B', font=("Arial", 10, "bold"))
+            
+        # Update score
+        self.canvas.itemconfig(self.score_text, text=f'Score: {model.score}')
+        
+        # Hide instructions during gameplay
+        self.canvas.itemconfig(self.state_bg, state='hidden')
+        self.canvas.itemconfig(self.state_text, text="")
+        self.canvas.itemconfig(self.instructions_text, text="")
+        
+    def draw_game_over_screen(self, score):
+        """Public method to draw the game over screen"""
+        self._draw_game_over_screen(score)
     
     def _draw_start_screen(self):
         """Draw the start screen with animated elements"""

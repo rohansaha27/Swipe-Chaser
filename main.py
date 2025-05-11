@@ -73,7 +73,7 @@ class SwipeChaserGame:
         version_label.pack(side=tk.BOTTOM, pady=10)
     
     def start_game(self):
-        """Start the game"""
+        """Initialize the game components"""
         # Clear the root window
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -93,18 +93,27 @@ class SwipeChaserGame:
             self.root
         )
         
-        # Start the game loop - countdown will be triggered by space key
+        # Start the game loop
         self.presenter.update()
     
     def show_countdown(self, callback):
-        """Show a countdown before starting the game"""
-        countdown_frame = tk.Frame(self.canvas, bg='#121212')
-        countdown_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        """Show a countdown on a separate screen"""
+        # Clear the entire window first
+        for widget in self.root.winfo_children():
+            widget.destroy()
+            
+        # Create a full-screen canvas for the countdown
+        countdown_canvas = tk.Canvas(self.root, width=400, height=600, bg='#121212')
+        countdown_canvas.pack(fill=tk.BOTH, expand=True)
         
-        countdown_label = tk.Label(countdown_frame, text="3", 
-                                 font=("Arial", 48, "bold"),
+        # Create a large centered countdown label
+        countdown_label = tk.Label(self.root, text="3", 
+                                 font=("Arial", 120, "bold"),
                                  fg="#FFD700", bg="#121212")
-        countdown_label.pack()
+        countdown_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        
+        # Make sure the countdown is visible on top
+        self.root.update()
         
         def update_countdown(count):
             if count > 0:
@@ -112,10 +121,48 @@ class SwipeChaserGame:
                 self.root.after(1000, update_countdown, count-1)
             else:
                 countdown_label.config(text="GO!")
-                self.root.after(500, countdown_frame.destroy)
-                self.root.after(500, callback)
+                self.root.after(800, lambda: self.prepare_game_screen(callback))
         
+        # Start the countdown
         update_countdown(3)
+        
+    def prepare_game_screen(self, callback):
+        """Prepare the game screen after countdown"""
+        # Clear the countdown screen
+        for widget in self.root.winfo_children():
+            widget.destroy()
+            
+        # Create game canvas
+        self.canvas = tk.Canvas(self.root, width=400, height=600, bg='#121212')
+        self.canvas.pack()
+        
+        # Create the MVP components
+        self.model = GameModel()
+        self.view = GameView(self.root, canvas=self.canvas)
+        self.presenter = GamePresenter(self.model, self.view, self.root)
+        
+        # Set up key bindings
+        self.root.bind('<Left>', self.presenter.handle_left)
+        self.root.bind('<Right>', self.presenter.handle_right)
+        self.root.bind('r', self.presenter.handle_restart)
+        self.root.bind('R', self.presenter.handle_restart)
+        self.root.bind('m', self.presenter.handle_menu)
+        self.root.bind('M', self.presenter.handle_menu)
+        self.root.bind('<space>', self.presenter.handle_space)
+        self.root.bind('<Escape>', lambda e: self.toggle_pause())
+        
+        # Important: Start the game BEFORE calling the callback
+        self.model.start_game()  # This sets game_state to "playing"
+        
+        # Set game state variables
+        self.current_screen = "game"
+        self.game_running = True
+        
+        # Start the game loop
+        self.presenter.update()
+        
+        # Call the callback if needed
+        # callback()  # We don't need this anymore
     
     def begin_game(self):
         """Begin the game after countdown"""
@@ -183,6 +230,7 @@ def main():
     os.makedirs("assets/images", exist_ok=True)
     
     # Start the game
+    global game  # Make the game instance globally accessible
     game = SwipeChaserGame()
     game.root.mainloop()
 

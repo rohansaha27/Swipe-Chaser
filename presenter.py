@@ -30,13 +30,26 @@ class GamePresenter:
     
     def handle_space(self, event):
         if self.model.game_state == "start" and not self.paused:
-            # Find the game instance to show countdown
-            if hasattr(self.root, 'master') and hasattr(self.root.master, 'show_countdown'):
-                # Show countdown animation first
-                self.root.master.show_countdown(lambda: self.model.start_game())
-            else:
-                # Fallback if we can't find the game instance
-                self.model.start_game()
+            # Try different approaches to find the game instance
+            # First, check if we have a direct reference
+            try:
+                import __main__
+                if hasattr(__main__, 'game'):
+                    # Access the global game instance
+                    __main__.game.show_countdown(lambda: None)  # We don't need to call start_game here
+                    return
+            except:
+                pass
+                
+            # Try to find the game instance in the root's winfo_toplevel
+            root_toplevel = self.root.winfo_toplevel()
+            for widget in root_toplevel.winfo_children():
+                if hasattr(widget, 'show_countdown'):
+                    widget.show_countdown(lambda: None)  # We don't need to call start_game here
+                    return
+            
+            # If all else fails, just start the game directly
+            self.model.start_game()
         
     def handle_restart(self, event):
         if self.model.game_state == "game_over":
@@ -72,16 +85,23 @@ class GamePresenter:
     
     def update(self):
         """Main game loop update"""
-        if not self.paused:
-            # Update model
+        if self.model.game_state == "playing" and not self.paused:
             self.model.update()
             
-            # Check for game over state change
-            if self.model.game_state == "game_over" and self.last_score != self.model.score:
+            # Check if game is over
+            if self.model.game_state == "game_over":
                 self.last_score = self.model.score
+                
+        # Update view
+        if self.model.game_state == "start":
+            self.view.draw_start_screen()
+        elif self.model.game_state == "playing":
+            self.view.draw_game_screen(self.model)
+        elif self.model.game_state == "game_over":
+            self.view.draw_game_over_screen(self.last_score)
         
-        # Draw the current state
-        self.view.draw(self.model)
-        
-        # Schedule the next update (60 FPS)
-        self.update_id = self.root.after(16, self.update)
+        # Debug output to help diagnose issues
+        print(f"Game state: {self.model.game_state}")
+            
+        # Schedule next update
+        self.update_id = self.root.after(33, self.update)  # ~30 FPS
