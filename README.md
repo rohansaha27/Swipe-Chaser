@@ -10,7 +10,7 @@ A minimal Subway Surfers-style endless runner using the MVP (Model-View-Presente
    ```
 2. Run the game:
    ```bash
-   python main.py
+   python3 main.py
    ```
 
 Use arrow keys to move. Avoid obstacles and collect coins!
