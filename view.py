@@ -139,8 +139,10 @@ class GameView:
             # Add dollar sign
             self.canvas.create_text(x, y, text="$", fill='#B8860B', font=("Arial", 10, "bold"))
             
-        # Update score
+        # Update score and make sure it's on top
         self.canvas.itemconfig(self.score_text, text=f'Score: {model.score}')
+        self.canvas.tag_raise(self.score_bg)
+        self.canvas.tag_raise(self.score_text)
         
         # Hide instructions during gameplay
         self.canvas.itemconfig(self.state_bg, state='hidden')
