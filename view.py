@@ -35,10 +35,25 @@ class GameView:
         self.score_bg = self.canvas.create_rectangle(10, 10, 130, 40, fill=UI_BG_COLOR, outline=UI_TEXT_COLOR)
         self.score_text = self.canvas.create_text(70, 25, text="Score: 0", fill=UI_TEXT_COLOR, font=("Arial", 16, "bold"))
         
-        # Game state text (start, game over)
-        self.state_bg = self.canvas.create_rectangle(50, 250, 350, 350, fill=UI_BG_COLOR, outline=UI_TEXT_COLOR, state='hidden')
-        self.state_text = self.canvas.create_text(200, 280, text="", fill=UI_TEXT_COLOR, font=("Arial", 20, "bold"))
-        self.instructions_text = self.canvas.create_text(200, 320, text="", fill=UI_TEXT_COLOR, font=("Arial", 12), width=250)
+        # Game state text (start, game over) - centered in the canvas
+        center_x = 400 / 2  # Canvas width / 2
+        center_y = 600 / 2  # Canvas height / 2
+        panel_width = 300
+        panel_height = 200
+        
+        self.state_bg = self.canvas.create_rectangle(
+            center_x - panel_width/2, center_y - panel_height/2,
+            center_x + panel_width/2, center_y + panel_height/2,
+            fill=UI_BG_COLOR, outline=UI_TEXT_COLOR, state='hidden')
+        
+        self.state_text = self.canvas.create_text(
+            center_x, center_y - 40,  # Title position
+            text="", fill=UI_TEXT_COLOR, font=("Arial", 24, "bold"))
+            
+        self.instructions_text = self.canvas.create_text(
+            center_x, center_y + 20,  # Instructions position
+            text="", fill=UI_TEXT_COLOR, font=("Arial", 14),
+            width=250, justify=tk.CENTER)  # Center-aligned text
         
 
     
@@ -181,18 +196,7 @@ class GameView:
                                    "Press R to restart\n" +
                                    "Press M for main menu")
         
-        # Display the score in a simple, clean format
-        score_x, score_y = 200, 310
-        font_size = 28
-        
-        # Simple gold score display
-        self.canvas.create_text(
-            score_x, score_y,
-            text=str(score),
-            fill=UI_TEXT_COLOR,
-            font=("Arial", font_size, "bold"),
-            anchor="center"  # Ensure text is centered
-        )
+        # We don't need to display the score again as it's already in the instructions text
     
     def _draw_game_screen(self, model):
         """Draw the main game screen with enhanced visuals"""
