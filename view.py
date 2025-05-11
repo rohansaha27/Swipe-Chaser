@@ -3,21 +3,30 @@ import tkinter as tk
 LANE_X = [100, 200, 300]
 PLAYER_Y = 500
 
+# Color scheme - black/grey theme with gold
+BG_COLOR = '#121212'  # Dark background
+LANE_COLOR = '#2A2A2A'  # Dark grey lanes
+UI_BG_COLOR = '#333333'  # Dark grey UI elements
+UI_TEXT_COLOR = '#FFD700'  # Gold text
+PLAYER_COLOR = '#FFD700'  # Gold player
+COIN_COLOR = '#FFD700'  # Gold coins
+OBSTACLE_COLOR = '#FF4444'  # Red obstacles
+
 class GameView:
     def __init__(self, root):
         self.root = root
-        self.canvas = tk.Canvas(root, width=400, height=600, bg='#1E90FF')  # Blue background
+        self.canvas = tk.Canvas(root, width=400, height=600, bg=BG_COLOR)  # Dark background
         self.canvas.pack()
         
         # Store canvas items that need to be updated
         # Create text with background for better visibility
-        self.score_bg = self.canvas.create_rectangle(10, 10, 130, 40, fill='white', outline='black')
-        self.score_text = self.canvas.create_text(70, 25, text="Score: 0", fill="black", font=("Arial", 16, "bold"))
+        self.score_bg = self.canvas.create_rectangle(10, 10, 130, 40, fill=UI_BG_COLOR, outline=UI_TEXT_COLOR)
+        self.score_text = self.canvas.create_text(70, 25, text="Score: 0", fill=UI_TEXT_COLOR, font=("Arial", 16, "bold"))
         
         # Game state text (start, game over)
-        self.state_bg = self.canvas.create_rectangle(50, 250, 350, 350, fill='white', outline='black', state='hidden')
-        self.state_text = self.canvas.create_text(200, 280, text="", fill="black", font=("Arial", 20, "bold"))
-        self.instructions_text = self.canvas.create_text(200, 320, text="", fill="black", font=("Arial", 12), width=250)
+        self.state_bg = self.canvas.create_rectangle(50, 250, 350, 350, fill=UI_BG_COLOR, outline=UI_TEXT_COLOR, state='hidden')
+        self.state_text = self.canvas.create_text(200, 280, text="", fill=UI_TEXT_COLOR, font=("Arial", 20, "bold"))
+        self.instructions_text = self.canvas.create_text(200, 320, text="", fill=UI_TEXT_COLOR, font=("Arial", 12), width=250)
         
     def draw(self, model):
         # Clear canvas except for persistent UI elements
@@ -67,24 +76,36 @@ class GameView:
     def _draw_game_screen(self, model):
         # Draw lanes (background layer)
         for x in LANE_X:
-            self.canvas.create_rectangle(x-30, 0, x+30, 600, fill='#A9A9A9', outline='')  # Gray lanes
+            self.canvas.create_rectangle(x-30, 0, x+30, 600, fill=LANE_COLOR, outline='')  # Dark grey lanes
             
         # Draw player
         self.canvas.create_rectangle(
             LANE_X[model.player_lane]-20, PLAYER_Y-20, 
             LANE_X[model.player_lane]+20, PLAYER_Y+20, 
-            fill='#FFD700', outline='')  # Gold player
+            fill=PLAYER_COLOR, outline='')  # Gold player
             
         # Draw obstacles
         for lane, y in model.obstacles:
             self.canvas.create_rectangle(
                 LANE_X[lane]-20, y-20, 
                 LANE_X[lane]+20, y+20, 
-                fill='#DC143C', outline='')  # Red obstacles
+                fill=OBSTACLE_COLOR, outline='')  # Red obstacles
                 
         # Draw coins
         for lane, y in model.coins:
+            # Create a more detailed gold coin with a 3D effect
+            coin_x = LANE_X[lane]
+            coin_y = y
+            coin_radius = 15
+            
+            # Main coin body
             self.canvas.create_oval(
-                LANE_X[lane]-15, y-15, 
-                LANE_X[lane]+15, y+15, 
-                fill='#FFFF00', outline='')  # Yellow coins
+                coin_x-coin_radius, coin_y-coin_radius, 
+                coin_x+coin_radius, coin_y+coin_radius, 
+                fill=COIN_COLOR, outline='#B8860B')  # Gold coin with darker gold outline
+                
+            # Inner detail to give 3D effect
+            self.canvas.create_oval(
+                coin_x-coin_radius*0.7, coin_y-coin_radius*0.7, 
+                coin_x+coin_radius*0.7, coin_y+coin_radius*0.7, 
+                fill='#F0C000', outline='')  # Yellow coins
