@@ -1,4 +1,4 @@
-# Subway Surfers MVP Demo
+# Subway Surfers inspired game
 
 A minimal Subway Surfers-style endless runner using the MVP (Model-View-Presenter) pattern with Python and Pygame.
 
