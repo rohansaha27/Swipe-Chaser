@@ -2,3 +2,9 @@
 Pillow==10.0.0
 
 # Tkinter comes with Python standard library
+
+# ML libraries for dynamic difficulty adjustment
+scikit-learn==1.0.2
+numpy==1.22.0
+pandas==1.4.0
+joblib==1.1.0

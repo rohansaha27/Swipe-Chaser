@@ -1,13 +1,14 @@
 # Swipe Chaser 🕹️  
 *A Subway Surfers-inspired endless runner built with Python*
 
-Swipe Chaser is a minimalist 2D endless runner game developed in Python using the **Model-View-Presenter (MVP)** architecture. Inspired by Subway Surfers, the game challenges players to dodge obstacles and collect coins as the difficulty gradually increases.
+Swipe Chaser is a minimalist 2D endless runner game developed in Python using the **Model-View-Presenter (MVP)** architecture. Inspired by Subway Surfers, the game challenges players to dodge obstacles and collect coins as the difficulty dynamically adapts to your skill level.
 
 Built with:
 - 🐍 Python
 - 🖼️ Tkinter (UI)
 - 🔊 Pygame (sound, animation)
 - 🧮 NumPy (procedural audio)
+- 🤖 scikit-learn (Machine Learning for Dynamic Difficulty)
 
 ---
 
@@ -30,6 +31,11 @@ Built with:
 - Procedural audio effects using NumPy
 - Game states: Menu, Running, Paused, Game Over
 - Polished UI with score feedback and restart options
+- **Dynamic Difficulty Adjustment with Machine Learning**
+  - Adapts to player skill level in real-time
+  - Tracks metrics like reaction time, near-misses, and coin collection
+  - Adjusts game speed, obstacle patterns, and coin values
+  - Provides personalized challenge for every player
 
 ---
 

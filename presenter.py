@@ -1,3 +1,5 @@
+import traceback
+
 class GamePresenter:
     def __init__(self, model, view, root):
         self.model = model
@@ -7,6 +9,7 @@ class GamePresenter:
         # Game state
         self.paused = False
         self.last_score = 0
+        self.error_count = 0  # Track errors to prevent infinite error loops
         
         # Set up key bindings
         self.root.bind('<Left>', self.handle_left)
@@ -85,23 +88,56 @@ class GamePresenter:
     
     def update(self):
         """Main game loop update"""
-        if self.model.game_state == "playing" and not self.paused:
-            self.model.update()
-            
-            # Check if game is over
-            if self.model.game_state == "game_over":
-                self.last_score = self.model.score
+        try:
+            # Check if root window still exists
+            if not self._check_root_exists():
+                return
                 
-        # Update view
-        if self.model.game_state == "start":
-            self.view.draw_start_screen()
-        elif self.model.game_state == "playing":
-            self.view.draw_game_screen(self.model)
-        elif self.model.game_state == "game_over":
-            self.view.draw_game_over_screen(self.last_score)
-        
-        # Debug output to help diagnose issues
-        print(f"Game state: {self.model.game_state}")
+            if self.model.game_state == "playing" and not self.paused:
+                try:
+                    self.model.update()
+                except Exception as e:
+                    print(f"Error in model update: {e}")
+                    traceback.print_exc()
+                
+                # Check if game is over
+                if self.model.game_state == "game_over":
+                    self.last_score = self.model.score
             
-        # Schedule next update
-        self.update_id = self.root.after(33, self.update)  # ~30 FPS
+            # Update view with error handling
+            try:
+                if self.model.game_state == "start":
+                    self.view.draw_start_screen()
+                elif self.model.game_state == "playing":
+                    self.view.draw_game_screen(self.model)
+                elif self.model.game_state == "game_over":
+                    self.view.draw_game_over_screen(self.last_score)
+            except Exception as e:
+                print(f"Error in view update: {e}")
+                traceback.print_exc()
+            
+            # Reset error count on successful update
+            self.error_count = 0
+            
+            # Schedule next update if root still exists
+            if self._check_root_exists():
+                self.update_id = self.root.after(33, self.update)  # ~30 FPS
+                
+        except Exception as e:
+            # Increment error count
+            self.error_count += 1
+            print(f"Error in game loop: {e}")
+            traceback.print_exc()
+            
+            # If we haven't had too many errors, try to continue
+            if self.error_count < 5 and self._check_root_exists():
+                self.update_id = self.root.after(33, self.update)
+            else:
+                print("Too many errors, stopping game loop")
+    
+    def _check_root_exists(self):
+        """Check if the root window still exists"""
+        try:
+            return self.root.winfo_exists()
+        except:
+            return False
