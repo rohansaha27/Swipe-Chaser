@@ -30,12 +30,15 @@ Built with:
 - Obstacle spawning, collision detection, and scoring system
 - Procedural audio effects using NumPy
 - Game states: Menu, Running, Paused, Game Over
+<<<<<<< HEAD
 - Polished UI with score feedback and restart options
 - **Dynamic Difficulty Adjustment with Machine Learning**
   - Adapts to player skill level in real-time
   - Tracks metrics like reaction time, near-misses, and coin collection
   - Adjusts game speed, obstacle patterns, and coin values
   - Provides personalized challenge for every player
+=======
+>>>>>>> a5ca3808b644e666632b1af844693b57cf65e5b9
 
 ---
 
