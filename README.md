@@ -37,10 +37,8 @@ Built with:
   - Tracks metrics like reaction time, near-misses, and coin collection
   - Adjusts game speed, obstacle patterns, and coin values
   - Provides personalized challenge for every player
-=======
->>>>>>> a5ca3808b644e666632b1af844693b57cf65e5b9
+==============
 
----
 
 ## ▶️ How to Run
 
